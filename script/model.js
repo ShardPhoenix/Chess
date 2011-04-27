@@ -20,7 +20,7 @@ Rook = (function() {
     if (currentCoord.col - targetCoord.col === 0 && currentCoord.row - targetCoord.row !== 0) {
       greater = utils.max(currentCoord.row, targetCoord.row) - 1;
       less = utils.min(currentCoord.row, targetCoord.row) + 1;
-      if (greater > less) {
+      if (greater >= less) {
         for (i = less; (less <= greater ? i <= greater : i >= greater); (less <= greater ? i += 1 : i -= 1)) {
           if (board[currentCoord.col][i].piece) {
             return false;
@@ -31,7 +31,7 @@ Rook = (function() {
     } else if (currentCoord.col - targetCoord.col !== 0 && currentCoord.row - targetCoord.row === 0) {
       greater = utils.max(currentCoord.col, targetCoord.col) - 1;
       less = utils.min(currentCoord.col, targetCoord.col) + 1;
-      if (greater > less) {
+      if (greater >= less) {
         for (i = less; (less <= greater ? i <= greater : i >= greater); (less <= greater ? i += 1 : i -= 1)) {
           if (board[i][currentCoord.row].piece) {
             return false;

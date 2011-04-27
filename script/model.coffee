@@ -19,7 +19,7 @@ class Rook
         if currentCoord.col - targetCoord.col == 0 and currentCoord.row - targetCoord.row != 0
             greater = utils.max(currentCoord.row, targetCoord.row) - 1
             less = utils.min(currentCoord.row, targetCoord.row) + 1
-            if greater > less
+            if greater >= less
                 for i in [less..greater]
                     if (board[currentCoord.col][i].piece)
                         return false
@@ -28,7 +28,7 @@ class Rook
         else if currentCoord.col - targetCoord.col != 0 and currentCoord.row - targetCoord.row == 0
             greater = utils.max(currentCoord.col, targetCoord.col) - 1
             less = utils.min(currentCoord.col, targetCoord.col) + 1
-            if greater > less
+            if greater >= less
                 for i in [less..greater]
                     if (board[i][currentCoord.row].piece)
                         return false
