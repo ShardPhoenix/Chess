@@ -61,7 +61,8 @@ $("#canvas").mousedown((event) ->
 $("html").mousemove((event) ->
     input.mousePos.x = event.clientX - input.xOffset
     input.mousePos.y = event.clientY - input.yOffset
-    $("#mousePos").text("X: #{input.mousePos.x}, Y: #{input.mousePos.y}"))
+    #$("#mousePos").text("X: #{input.mousePos.x}, Y: #{input.mousePos.y}")
+    )
     
 $("html").mousedown((event) ->
     event.preventDefault()
@@ -94,7 +95,8 @@ $("html").mouseup((event) ->
                 y: upY
             handled: false
     
-    #$("#debug").text("Mouse button #{event.button} up at: #{event.clientX} left #{event.clientY} down"))
+    #$("#debug").text("Mouse button #{event.button} up at: #{event.clientX} left #{event.clientY} down")
+    )
 
 
 class Controller

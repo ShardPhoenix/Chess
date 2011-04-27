@@ -1,4 +1,4 @@
-var BoardSquare, GameModel, King, Rook;
+var BoardSquare, GameModel, King, Knight, Rook;
 King = (function() {
   function King(color) {
     this.color = color;
@@ -44,6 +44,18 @@ Rook = (function() {
   };
   return Rook;
 })();
+Knight = (function() {
+  function Knight(color) {
+    this.color = color;
+  }
+  Knight.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
+    var horiz, vert;
+    vert = utils.abs(currentCoord.row - targetCoord.row);
+    horiz = utils.abs(currentCoord.col - targetCoord.col);
+    return (vert === 2 && horiz === 1) || (vert === 1 && horiz === 2);
+  };
+  return Knight;
+})();
 BoardSquare = (function() {
   function BoardSquare(color, col, row) {
     this.color = color;
@@ -70,6 +82,7 @@ GameModel = (function() {
     }
     this.board[2][2].piece = new King(colors.WHITE);
     this.board[5][6].piece = new Rook(colors.BLACK);
+    this.board[4][4].piece = new Knight(colors.WHITE);
     this.model = {
       board: this.board
     };

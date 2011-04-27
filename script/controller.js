@@ -90,13 +90,11 @@ $("#canvas").mousedown(function(event) {
 });
 $("html").mousemove(function(event) {
   input.mousePos.x = event.clientX - input.xOffset;
-  input.mousePos.y = event.clientY - input.yOffset;
-  return $("#mousePos").text("X: " + input.mousePos.x + ", Y: " + input.mousePos.y);
+  return input.mousePos.y = event.clientY - input.yOffset;
 });
 $("html").mousedown(function(event) {
   event.preventDefault();
   event.stopPropagation();
-  $("#debug").text("Mouse button " + event.button + " down at: " + event.clientX + " left " + event.clientY + " down");
   return input.mouseHeld[event.button] = {
     x: event.clientX - input.xOffset,
     y: event.clientY - input.yOffset
@@ -124,7 +122,7 @@ $("html").mouseup(function(event) {
   }
   input.mouseHeld[event.button] = false;
   if (startPos) {
-    input.mouseClicked[event.button] = {
+    return input.mouseClicked[event.button] = {
       coord: {
         x: upX,
         y: upY
@@ -132,7 +130,6 @@ $("html").mouseup(function(event) {
       handled: false
     };
   }
-  return $("#debug").text("Mouse button " + event.button + " up at: " + event.clientX + " left " + event.clientY + " down");
 });
 Controller = (function() {
   function Controller() {

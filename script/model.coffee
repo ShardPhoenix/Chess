@@ -35,6 +35,15 @@ class Rook
             return true
         
         return false
+        
+class Knight
+    constructor: (color) ->
+        @color = color
+    
+    canMoveTo: (board, currentCoord, targetCoord) ->
+        vert = utils.abs(currentCoord.row - targetCoord.row)
+        horiz = utils.abs(currentCoord.col - targetCoord.col)
+        return (vert == 2 and horiz == 1) or (vert == 1 and horiz == 2)
 
 class BoardSquare
     constructor: (color, col, row) ->
@@ -45,6 +54,8 @@ class BoardSquare
         @selected = false  
         @piece = null
 
+#class GameBoard
+        
 class GameModel
     constructor: ->       
         @board = []
@@ -59,6 +70,7 @@ class GameModel
         #fill in a few pieces
         @board[2][2].piece = new King(colors.WHITE)
         @board[5][6].piece = new Rook(colors.BLACK)
+        @board[4][4].piece = new Knight(colors.WHITE)
 
         @model =
             board: @board
