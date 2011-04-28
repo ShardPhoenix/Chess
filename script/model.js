@@ -14,51 +14,23 @@ Piece = (function() {
   Piece.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     return false;
   };
-  Piece.prototype.diagonalPathClear = function(board, currentCoord, targetCoord) {
+  Piece.prototype.isOrthogonalPathClear = function(board, currentCoord, targetCoord) {
     var currentCol, currentRow;
     currentCol = currentCoord.col;
     currentRow = currentCoord.row;
     while (!(currentCol === targetCoord.col && currentRow === targetCoord.row)) {
-      if (!(currentCol === currentCoord.col && currentRow === currentCoord.row)) {
-        if (board[currentCol][currentRow].piece) {
-          return false;
-        }
+      if (!(currentCol === currentCoord.col && currentRow === currentCoord.row) && board[currentCol][currentRow].piece) {
+        return false;
       }
       if (targetCoord.col > currentCoord.col) {
         currentCol += 1;
-      } else {
+      } else if (targetCoord.col < currentCoord.col) {
         currentCol -= 1;
       }
       if (targetCoord.row > currentCoord.row) {
         currentRow += 1;
-      } else {
+      } else if (targetCoord.row < currentCoord.row) {
         currentRow -= 1;
-      }
-    }
-    return true;
-  };
-  Piece.prototype.horizontalPathClear = function(board, currentCoord, targetCoord) {
-    var greater, i, less;
-    greater = utils.max(currentCoord.col, targetCoord.col) - 1;
-    less = utils.min(currentCoord.col, targetCoord.col) + 1;
-    if (greater >= less) {
-      for (i = less; (less <= greater ? i <= greater : i >= greater); (less <= greater ? i += 1 : i -= 1)) {
-        if (board[i][currentCoord.row].piece) {
-          return false;
-        }
-      }
-    }
-    return true;
-  };
-  Piece.prototype.verticalPathClear = function(board, currentCoord, targetCoord) {
-    var greater, i, less;
-    greater = utils.max(currentCoord.row, targetCoord.row) - 1;
-    less = utils.min(currentCoord.row, targetCoord.row) + 1;
-    if (greater >= less) {
-      for (i = less; (less <= greater ? i <= greater : i >= greater); (less <= greater ? i += 1 : i -= 1)) {
-        if (board[currentCoord.col][i].piece) {
-          return false;
-        }
       }
     }
     return true;
@@ -84,10 +56,11 @@ Rook = (function() {
   }
   __extends(Rook, Piece);
   Rook.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
-    if (currentCoord.col - targetCoord.col === 0 && currentCoord.row - targetCoord.row !== 0) {
-      return Piece.prototype.verticalPathClear(board, currentCoord, targetCoord);
-    } else if (currentCoord.col - targetCoord.col !== 0 && currentCoord.row - targetCoord.row === 0) {
-      return Piece.prototype.horizontalPathClear(board, currentCoord, targetCoord);
+    var horiz, vert;
+    vert = utils.abs(currentCoord.row - targetCoord.row);
+    horiz = utils.abs(currentCoord.col - targetCoord.col);
+    if ((vert === 0 && horiz !== 0) || (vert !== 0 && horiz === 0)) {
+      return Piece.prototype.isOrthogonalPathClear(board, currentCoord, targetCoord);
     } else {
       return false;
     }
@@ -106,7 +79,7 @@ Bishop = (function() {
     if (vert !== horiz || vert === 0 || horiz === 0) {
       return false;
     }
-    return Piece.prototype.diagonalPathClear(board, currentCoord, targetCoord);
+    return Piece.prototype.isOrthogonalPathClear(board, currentCoord, targetCoord);
   };
   return Bishop;
 })();
@@ -119,12 +92,8 @@ Queen = (function() {
     var horiz, vert;
     vert = utils.abs(currentCoord.row - targetCoord.row);
     horiz = utils.abs(currentCoord.col - targetCoord.col);
-    if (vert === horiz && (vert !== 0 && horiz !== 0)) {
-      return Piece.prototype.diagonalPathClear(board, currentCoord, targetCoord);
-    } else if (horiz === 0 && vert !== 0) {
-      return Piece.prototype.verticalPathClear(board, currentCoord, targetCoord);
-    } else if (vert === 0 && horiz !== 0) {
-      return Piece.prototype.horizontalPathClear(board, currentCoord, targetCoord);
+    if ((vert === horiz && (vert !== 0 && horiz !== 0)) || (horiz === 0 && vert !== 0) || (vert === 0 && horiz !== 0)) {
+      return Piece.prototype.isOrthogonalPathClear(board, currentCoord, targetCoord);
     } else {
       return false;
     }
@@ -225,6 +194,9 @@ GameModel = (function() {
           })) {
             newSelected.piece = alreadySelected.piece;
             alreadySelected.piece = null;
+          } else if (!newSelected.piece) {
+            newSelected.selected = false;
+            alreadySelected.selected = true;
           }
         }
       }

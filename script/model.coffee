@@ -8,42 +8,24 @@ class Piece
     canMoveTo: (board, currentCoord, targetCoord) ->
         return false
         
-    diagonalPathClear: (board, currentCoord, targetCoord) ->
+    #checks if an orthogonal path is clear of pieces, not counting the start and end squares
+    isOrthogonalPathClear: (board, currentCoord, targetCoord) ->
         currentCol = currentCoord.col
         currentRow = currentCoord.row
         while !(currentCol == targetCoord.col and currentRow == targetCoord.row) #stop at target square
             #don't care about start square
-            if !(currentCol == currentCoord.col and currentRow == currentCoord.row)
-                if board[currentCol][currentRow].piece
-                    return false
+            if !(currentCol == currentCoord.col and currentRow == currentCoord.row) and board[currentCol][currentRow].piece
+                return false
             
             if targetCoord.col > currentCoord.col
                 currentCol += 1
-            else
+            else if targetCoord.col < currentCoord.col
                 currentCol -= 1
             if targetCoord.row > currentCoord.row
                 currentRow += 1
-            else
+            else if targetCoord.row < currentCoord.row
                 currentRow -= 1
                 
-        return true
-        
-    horizontalPathClear: (board, currentCoord, targetCoord) ->
-        greater = utils.max(currentCoord.col, targetCoord.col) - 1
-        less = utils.min(currentCoord.col, targetCoord.col) + 1
-        if greater >= less
-            for i in [less..greater]
-                if (board[i][currentCoord.row].piece)
-                    return false
-        return true
-        
-    verticalPathClear: (board, currentCoord, targetCoord) ->
-        greater = utils.max(currentCoord.row, targetCoord.row) - 1
-        less = utils.min(currentCoord.row, targetCoord.row) + 1
-        if greater >= less
-            for i in [less..greater]
-                if (board[currentCoord.col][i].piece)
-                    return false
         return true
     
 class King extends Piece
@@ -54,34 +36,27 @@ class King extends Piece
         
 class Rook extends Piece 
     canMoveTo: (board, currentCoord, targetCoord) ->
-        #vertical movement
-        if currentCoord.col - targetCoord.col == 0 and currentCoord.row - targetCoord.row != 0
-            return Piece::verticalPathClear(board, currentCoord, targetCoord)
-        #horizontal movement
-        else if currentCoord.col - targetCoord.col != 0 and currentCoord.row - targetCoord.row == 0
-            return Piece::horizontalPathClear(board, currentCoord, targetCoord)
+        vert = utils.abs(currentCoord.row - targetCoord.row)
+        horiz = utils.abs(currentCoord.col - targetCoord.col)
+        if (vert == 0 and horiz != 0) or (vert != 0 and horiz == 0)
+            return Piece::isOrthogonalPathClear(board, currentCoord, targetCoord)
         else
             return false
         
 class Bishop extends Piece
     canMoveTo: (board, currentCoord, targetCoord) ->
-        #row and col must change by same amount
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
         if vert != horiz or vert == 0 or horiz == 0
             return false                
-        return Piece::diagonalPathClear(board, currentCoord, targetCoord)
+        return Piece::isOrthogonalPathClear(board, currentCoord, targetCoord)
         
 class Queen extends Piece
     canMoveTo: (board, currentCoord, targetCoord) ->
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
-        if vert == horiz and (vert != 0 and horiz != 0) 
-            return Piece::diagonalPathClear(board, currentCoord, targetCoord)  
-        else if (horiz == 0 and vert != 0) 
-            return Piece::verticalPathClear(board, currentCoord, targetCoord)
-        else if (vert == 0 and horiz != 0)
-            return Piece::horizontalPathClear(board, currentCoord, targetCoord)
+        if (vert == horiz and (vert != 0 and horiz != 0)) or (horiz == 0 and vert != 0) or (vert == 0 and horiz != 0)
+            return Piece::isOrthogonalPathClear(board, currentCoord, targetCoord)
         else
             return false
         
@@ -152,12 +127,17 @@ class GameModel
                             alreadySelected = square
                             square.selected = false
                 newSelected = @model.board[realCoord.col][realCoord.row]
-                newSelected.selected = true #should be in a GameBoard object that encapsulates the array
+                newSelected.selected = true
                 
+                #should be in a GameBoard object that encapsulates the array  
                 #handle moves and captures
                 if alreadySelected and alreadySelected.piece 
                     if alreadySelected.piece.canMoveTo(@board, {col: alreadySelected.col, row: alreadySelected.row}, {col: newSelected.col, row: newSelected.row})
                         newSelected.piece = alreadySelected.piece
                         alreadySelected.piece = null
+
                         #todo: handle captures
+                    else if !newSelected.piece
+                        newSelected.selected = false
+                        alreadySelected.selected = true #stay selected if we failed to move and didn't select another piece
             leftClick.handled = true
