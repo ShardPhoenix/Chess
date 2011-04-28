@@ -1,4 +1,10 @@
-var BoardSquare, GameModel, King, Knight, Rook;
+var Bishop, BoardSquare, GameModel, King, Knight, Piece, Queen, Rook;
+Piece = (function() {
+  function Piece(color) {
+    this.color = color;
+  }
+  return Piece;
+})();
 King = (function() {
   function King(color) {
     this.color = color;
@@ -44,6 +50,97 @@ Rook = (function() {
   };
   return Rook;
 })();
+Bishop = (function() {
+  function Bishop(color) {
+    this.color = color;
+  }
+  Bishop.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
+    var currentCol, currentRow, horiz, vert;
+    vert = utils.abs(currentCoord.row - targetCoord.row);
+    horiz = utils.abs(currentCoord.col - targetCoord.col);
+    if (vert !== horiz || vert === 0) {
+      return false;
+    }
+    currentCol = currentCoord.col;
+    currentRow = currentCoord.row;
+    while (!(currentCol === targetCoord.col && currentRow === targetCoord.row)) {
+      if (!(currentCol === currentCoord.col && currentRow === currentCoord.row)) {
+        if (board[currentCol][currentRow].piece) {
+          return false;
+        }
+      }
+      if (targetCoord.col > currentCoord.col) {
+        currentCol += 1;
+      } else {
+        currentCol -= 1;
+      }
+      if (targetCoord.row > currentCoord.row) {
+        currentRow += 1;
+      } else {
+        currentRow -= 1;
+      }
+    }
+    return true;
+  };
+  return Bishop;
+})();
+Queen = (function() {
+  function Queen(color) {
+    this.color = color;
+  }
+  Queen.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
+    var currentCol, currentRow, greater, horiz, i, less, vert;
+    vert = utils.abs(currentCoord.row - targetCoord.row);
+    horiz = utils.abs(currentCoord.col - targetCoord.col);
+    if (vert === horiz && (vert !== 0 && horiz !== 0)) {
+      currentCol = currentCoord.col;
+      currentRow = currentCoord.row;
+      while (!(currentCol === targetCoord.col && currentRow === targetCoord.row)) {
+        if (!(currentCol === currentCoord.col && currentRow === currentCoord.row)) {
+          if (board[currentCol][currentRow].piece) {
+            return false;
+          }
+        }
+        if (targetCoord.col > currentCoord.col) {
+          currentCol += 1;
+        } else {
+          currentCol -= 1;
+        }
+        if (targetCoord.row > currentCoord.row) {
+          currentRow += 1;
+        } else {
+          currentRow -= 1;
+        }
+      }
+      return true;
+    } else if (horiz === 0 && vert !== 0) {
+      greater = utils.max(currentCoord.row, targetCoord.row) - 1;
+      less = utils.min(currentCoord.row, targetCoord.row) + 1;
+      if (greater >= less) {
+        for (i = less; (less <= greater ? i <= greater : i >= greater); (less <= greater ? i += 1 : i -= 1)) {
+          if (board[currentCoord.col][i].piece) {
+            return false;
+          }
+        }
+      }
+      return true;
+    } else if (vert === 0 && horiz !== 0) {
+      greater = utils.max(currentCoord.col, targetCoord.col) - 1;
+      less = utils.min(currentCoord.col, targetCoord.col) + 1;
+      if (greater >= less) {
+        for (i = less; (less <= greater ? i <= greater : i >= greater); (less <= greater ? i += 1 : i -= 1)) {
+          if (board[i][currentCoord.row].piece) {
+            return false;
+          }
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
+  };
+  return Queen;
+})();
 Knight = (function() {
   function Knight(color) {
     this.color = color;
@@ -83,6 +180,8 @@ GameModel = (function() {
     this.board[2][2].piece = new King(colors.WHITE);
     this.board[5][6].piece = new Rook(colors.BLACK);
     this.board[4][4].piece = new Knight(colors.WHITE);
+    this.board[2][6].piece = new Bishop(colors.BLACK);
+    this.board[3][3].piece = new Queen(colors.WHITE);
     this.model = {
       board: this.board
     };

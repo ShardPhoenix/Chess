@@ -1,6 +1,11 @@
 
 #owner, controller, should be seperate from color
 
+
+class Piece
+    constructor: (color) ->
+        @color = color
+
 class King
     constructor: (color) ->
         @color = color
@@ -35,6 +40,90 @@ class Rook
             return true
         
         return false
+        
+class Bishop
+    constructor: (color) ->
+        @color = color
+    
+    canMoveTo: (board, currentCoord, targetCoord) ->
+        #row and col must change by same amount
+        vert = utils.abs(currentCoord.row - targetCoord.row)
+        horiz = utils.abs(currentCoord.col - targetCoord.col)
+        if vert != horiz or vert == 0
+            return false           
+        
+        currentCol = currentCoord.col
+        currentRow = currentCoord.row
+        #$("#debug").append("<br>Checking path</br>")
+        while !(currentCol == targetCoord.col and currentRow == targetCoord.row) #stop at target square
+            #don't care about start square
+            if !(currentCol == currentCoord.col and currentRow == currentCoord.row)
+                #$("#debug").append("Checking col: " + currentCol + " row: " + currentRow + "<br>")
+                if board[currentCol][currentRow].piece
+                    #$("#debug").append("Blocked by piece at: col: " + currentCol + " row: " + currentRow)
+                    return false
+            
+            if targetCoord.col > currentCoord.col
+                currentCol += 1
+            else
+                currentCol -= 1
+            if targetCoord.row > currentCoord.row
+                currentRow += 1
+            else
+                currentRow -= 1
+        return true
+        
+class Queen
+    constructor: (color) ->
+        @color = color
+    
+    #TODO: refactor out copypasta from above
+    canMoveTo: (board, currentCoord, targetCoord) ->
+        #row and col must change by same amount, or one by 0, but not both
+        vert = utils.abs(currentCoord.row - targetCoord.row)
+        horiz = utils.abs(currentCoord.col - targetCoord.col)
+        if vert == horiz and (vert != 0 and horiz != 0) 
+            currentCol = currentCoord.col
+            currentRow = currentCoord.row
+            #$("#debug").append("<br>Checking path</br>")
+            while !(currentCol == targetCoord.col and currentRow == targetCoord.row) #stop at target square
+                #don't care about start square
+                if !(currentCol == currentCoord.col and currentRow == currentCoord.row)
+                    #$("#debug").append("Checking col: " + currentCol + " row: " + currentRow + "<br>")
+                    if board[currentCol][currentRow].piece
+                        #$("#debug").append("Blocked by piece at: col: " + currentCol + " row: " + currentRow)
+                        return false
+                
+                if targetCoord.col > currentCoord.col
+                    currentCol += 1
+                else
+                    currentCol -= 1
+                if targetCoord.row > currentCoord.row
+                    currentRow += 1
+                else
+                    currentRow -= 1
+            return true
+        
+        else if (horiz == 0 and vert != 0) 
+            #vertical movement
+            greater = utils.max(currentCoord.row, targetCoord.row) - 1
+            less = utils.min(currentCoord.row, targetCoord.row) + 1
+            if greater >= less
+                for i in [less..greater]
+                    if (board[currentCoord.col][i].piece)
+                        return false
+            return true
+        else if (vert == 0 and horiz != 0)
+            #horizontal movement
+            greater = utils.max(currentCoord.col, targetCoord.col) - 1
+            less = utils.min(currentCoord.col, targetCoord.col) + 1
+            if greater >= less
+                for i in [less..greater]
+                    if (board[i][currentCoord.row].piece)
+                        return false
+            return true
+        else
+            return false
         
 class Knight
     constructor: (color) ->
@@ -71,6 +160,8 @@ class GameModel
         @board[2][2].piece = new King(colors.WHITE)
         @board[5][6].piece = new Rook(colors.BLACK)
         @board[4][4].piece = new Knight(colors.WHITE)
+        @board[2][6].piece = new Bishop(colors.BLACK)
+        @board[3][3].piece = new Queen(colors.WHITE)
 
         @model =
             board: @board
