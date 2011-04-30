@@ -2,6 +2,24 @@ var Renderer;
 Renderer = (function() {
   function Renderer() {
     this.ctx = document.getElementById("canvas").getContext("2d");
+    this.images = {
+      WHITE: {
+        KING: utils.makeImage("images/white_king.png"),
+        QUEEN: utils.makeImage("images/white_queen.png"),
+        ROOK: utils.makeImage("images/white_rook.png"),
+        BISHOP: utils.makeImage("images/white_bishop.png"),
+        KNIGHT: utils.makeImage("images/white_knight.png"),
+        PAWN: utils.makeImage("images/white_pawn.png")
+      },
+      BLACK: {
+        KING: utils.makeImage("images/black_king.png"),
+        QUEEN: utils.makeImage("images/black_queen.png"),
+        ROOK: utils.makeImage("images/black_rook.png"),
+        BISHOP: utils.makeImage("images/black_bishop.png"),
+        KNIGHT: utils.makeImage("images/black_knight.png"),
+        PAWN: utils.makeImage("images/black_pawn.png")
+      }
+    };
   }
   Renderer.prototype.drawRect = function(x, y, width, height, color) {
     this.ctx.fillStyle = color;
@@ -31,7 +49,7 @@ Renderer = (function() {
       this.ctx.strokeRect(xPos, yPos, constants.SQUARE_WIDTH, constants.SQUARE_HEIGHT);
     }
     if (square.piece) {
-      this.drawRect(xPos + constants.SQUARE_WIDTH / 4, yPos + constants.SQUARE_HEIGHT / 4, constants.SQUARE_WIDTH / 2, constants.SQUARE_HEIGHT / 2, colors.RED);
+      this.ctx.drawImage(this.images[square.piece.player][square.piece.appearance], xPos, yPos);
     }
     return this.ctx.restore();
   };

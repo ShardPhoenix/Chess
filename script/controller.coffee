@@ -13,19 +13,11 @@ utils =
     abs: (a) ->
         if a < 0 then -1*a else a
     dist: (coord1, coord2) ->
-        Math.sqrt((coord1.x - coord2.x) * (coord1.x - coord2.x) + (coord1.y - coord2.y) * (coord1.y - coord2.y))
-        
-    getSlots: () ->
-        slots = []
-        if input.keysHeld[keys.Q]
-            slots.push(0)
-        if input.keysHeld[keys.E]
-            slots.push(1)
-        if input.keysHeld[keys.R]
-            slots.push(2)
-        if input.keysHeld[keys.F]
-            slots.push(3)
-        return slots
+        Math.sqrt((coord1.x - coord2.x) * (coord1.x - coord2.x) + (coord1.y - coord2.y) * (coord1.y - coord2.y))       
+    makeImage: (path) ->
+        image = new Image()
+        image.src = path
+        return image
               
 input =
     xOffset: 0

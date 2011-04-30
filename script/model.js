@@ -8,8 +8,8 @@ var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, par
   return child;
 };
 Piece = (function() {
-  function Piece(color) {
-    this.color = color;
+  function Piece(player) {
+    this.player = player;
   }
   Piece.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     return false;
@@ -38,10 +38,11 @@ Piece = (function() {
   return Piece;
 })();
 King = (function() {
-  function King() {
-    King.__super__.constructor.apply(this, arguments);
-  }
   __extends(King, Piece);
+  function King(player) {
+    King.__super__.constructor.call(this, player);
+    this.appearance = "KING";
+  }
   King.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
     vert = utils.abs(currentCoord.row - targetCoord.row);
@@ -51,10 +52,11 @@ King = (function() {
   return King;
 })();
 Rook = (function() {
-  function Rook() {
-    Rook.__super__.constructor.apply(this, arguments);
-  }
   __extends(Rook, Piece);
+  function Rook(player) {
+    Rook.__super__.constructor.call(this, player);
+    this.appearance = "ROOK";
+  }
   Rook.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
     vert = utils.abs(currentCoord.row - targetCoord.row);
@@ -68,10 +70,11 @@ Rook = (function() {
   return Rook;
 })();
 Bishop = (function() {
-  function Bishop() {
-    Bishop.__super__.constructor.apply(this, arguments);
-  }
   __extends(Bishop, Piece);
+  function Bishop(player) {
+    Bishop.__super__.constructor.call(this, player);
+    this.appearance = "BISHOP";
+  }
   Bishop.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
     vert = utils.abs(currentCoord.row - targetCoord.row);
@@ -84,10 +87,11 @@ Bishop = (function() {
   return Bishop;
 })();
 Queen = (function() {
-  function Queen() {
-    Queen.__super__.constructor.apply(this, arguments);
-  }
   __extends(Queen, Piece);
+  function Queen(player) {
+    Queen.__super__.constructor.call(this, player);
+    this.appearance = "QUEEN";
+  }
   Queen.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
     vert = utils.abs(currentCoord.row - targetCoord.row);
@@ -101,10 +105,11 @@ Queen = (function() {
   return Queen;
 })();
 Knight = (function() {
-  function Knight() {
-    Knight.__super__.constructor.apply(this, arguments);
-  }
   __extends(Knight, Piece);
+  function Knight(player) {
+    Knight.__super__.constructor.call(this, player);
+    this.appearance = "KNIGHT";
+  }
   Knight.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
     vert = utils.abs(currentCoord.row - targetCoord.row);
@@ -126,22 +131,22 @@ BoardSquare = (function() {
 })();
 GameModel = (function() {
   function GameModel() {
-    var col, color, row, rowToAdd, squareNum, _ref, _ref2;
+    var col, player, row, rowToAdd, squareNum, _ref, _ref2;
     this.board = [];
     for (col = 0, _ref = constants.BOARD_WIDTH - 1; (0 <= _ref ? col <= _ref : col >= _ref); (0 <= _ref ? col += 1 : col -= 1)) {
       rowToAdd = [];
       for (row = 0, _ref2 = constants.BOARD_HEIGHT - 1; (0 <= _ref2 ? row <= _ref2 : row >= _ref2); (0 <= _ref2 ? row += 1 : row -= 1)) {
         squareNum = (col * (constants.BOARD_WIDTH - 1)) + row;
-        color = (squareNum % 2 !== 0 ? colors.BLACK : colors.WHITE);
-        rowToAdd.push(new BoardSquare(color, col, row));
+        player = (squareNum % 2 !== 0 ? colors.BROWN : colors.LIGHT_BROWN);
+        rowToAdd.push(new BoardSquare(player, col, row));
       }
       this.board.push(rowToAdd);
     }
-    this.board[2][2].piece = new King(colors.WHITE);
-    this.board[5][6].piece = new Rook(colors.BLACK);
-    this.board[4][4].piece = new Knight(colors.WHITE);
-    this.board[2][6].piece = new Bishop(colors.BLACK);
-    this.board[3][3].piece = new Queen(colors.WHITE);
+    this.board[2][2].piece = new King(players.WHITE);
+    this.board[5][6].piece = new Rook(players.BLACK);
+    this.board[4][4].piece = new Knight(players.WHITE);
+    this.board[2][6].piece = new Bishop(players.BLACK);
+    this.board[3][3].piece = new Queen(players.WHITE);
     this.model = {
       board: this.board
     };

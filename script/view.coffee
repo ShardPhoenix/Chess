@@ -1,6 +1,22 @@
 class Renderer
     constructor: ->
         @ctx = document.getElementById("canvas").getContext("2d");
+        
+        @images = 
+            WHITE:
+                KING: utils.makeImage("images/white_king.png")
+                QUEEN: utils.makeImage("images/white_queen.png")
+                ROOK: utils.makeImage("images/white_rook.png")
+                BISHOP: utils.makeImage("images/white_bishop.png")
+                KNIGHT: utils.makeImage("images/white_knight.png")
+                PAWN: utils.makeImage("images/white_pawn.png")
+            BLACK:
+                KING: utils.makeImage("images/black_king.png")
+                QUEEN: utils.makeImage("images/black_queen.png")
+                ROOK: utils.makeImage("images/black_rook.png")
+                BISHOP: utils.makeImage("images/black_bishop.png")
+                KNIGHT: utils.makeImage("images/black_knight.png")
+                PAWN: utils.makeImage("images/black_pawn.png")
 
     drawRect: (x, y, width, height, color) ->
         @ctx.fillStyle = color
@@ -27,8 +43,8 @@ class Renderer
             @ctx.lineWidth = 2
             @ctx.strokeStyle = colors.GREEN
             @ctx.strokeRect(xPos, yPos, constants.SQUARE_WIDTH, constants.SQUARE_HEIGHT)
-        if square.piece #fix, use constants
-            this.drawRect(xPos + constants.SQUARE_WIDTH/4, yPos + constants.SQUARE_HEIGHT/4, constants.SQUARE_WIDTH/2, constants.SQUARE_HEIGHT/2, colors.RED)
+        if square.piece 
+            @ctx.drawImage(@images[square.piece.player][square.piece.appearance], xPos, yPos)
         @ctx.restore()
  
     render: (model) ->

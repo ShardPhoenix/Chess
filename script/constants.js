@@ -16,10 +16,6 @@ constants = {
   BOARD_LEFT_OFFSET: 100,
   BOARD_TOP_OFFSET: 100
 };
-players = {
-  COMPUTER: 0,
-  HUMAN: 1
-};
 keys = {
   LEFT: 37,
   UP: 38,
@@ -37,8 +33,14 @@ keys = {
   E: 69,
   R: 82
 };
+players = {
+  BLACK: "BLACK",
+  WHITE: "WHITE"
+};
 colors = {
   BLACK: "rgba(0,0,0,1.0)",
+  BROWN: "rgba(156,68,14,1.0)",
+  LIGHT_BROWN: "rgba(210,190,168,1.0)",
   RED: "rgba(255,0,0,1.0)",
   BLUE: "rgba(0,0,255,1.0)",
   GREEN: "rgba(0,255,0,1.0)",

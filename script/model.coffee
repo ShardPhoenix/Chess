@@ -1,9 +1,10 @@
+#owner, controller, should be seperate from player
 
-#owner, controller, should be seperate from color
+#use player ids instead or in addition to players
 
 class Piece
-    constructor: (color) ->
-        @color = color
+    constructor: (player) ->
+        @player = player
         
     canMoveTo: (board, currentCoord, targetCoord) ->
         return false
@@ -29,12 +30,20 @@ class Piece
         return true
     
 class King extends Piece
+    constructor: (player) ->
+        super(player)
+        @appearance = "KING"
+
     canMoveTo: (board, currentCoord, targetCoord) ->
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
         return (vert == 1 and horiz == 1) or (vert == 0 and horiz == 1) or (vert == 1 and horiz == 0)
         
 class Rook extends Piece 
+    constructor: (player) ->
+        super(player)
+        @appearance = "ROOK"
+
     canMoveTo: (board, currentCoord, targetCoord) ->
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
@@ -44,6 +53,10 @@ class Rook extends Piece
             return false
         
 class Bishop extends Piece
+    constructor: (player) ->
+            super(player)
+            @appearance = "BISHOP"
+
     canMoveTo: (board, currentCoord, targetCoord) ->
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
@@ -52,6 +65,10 @@ class Bishop extends Piece
         return Piece::isOrthogonalPathClear(board, currentCoord, targetCoord)
         
 class Queen extends Piece
+    constructor: (player) ->
+        super(player)
+        @appearance = "QUEEN"
+
     canMoveTo: (board, currentCoord, targetCoord) ->
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
@@ -61,10 +78,15 @@ class Queen extends Piece
             return false
         
 class Knight extends Piece
+    constructor: (player) ->
+            super(player)
+            @appearance = "KNIGHT"
+
     canMoveTo: (board, currentCoord, targetCoord) ->
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
-        return (vert == 2 and horiz == 1) or (vert == 1 and horiz == 2)
+        return (vert == 2 and horiz == 1) or (vert == 1 and horiz == 2)      
+        
 
 class BoardSquare
     constructor: (color, col, row) ->
@@ -84,16 +106,16 @@ class GameModel
             rowToAdd = []
             for row in [0..constants.BOARD_HEIGHT-1]
                 squareNum = (col * (constants.BOARD_WIDTH - 1)) + row
-                color = (if squareNum % 2 != 0 then colors.BLACK else colors.WHITE)
-                rowToAdd.push(new BoardSquare(color, col, row))
+                player = (if squareNum % 2 != 0 then colors.BROWN else colors.LIGHT_BROWN)
+                rowToAdd.push(new BoardSquare(player, col, row))
             @board.push(rowToAdd)     
             
         #fill in a few pieces
-        @board[2][2].piece = new King(colors.WHITE)
-        @board[5][6].piece = new Rook(colors.BLACK)
-        @board[4][4].piece = new Knight(colors.WHITE)
-        @board[2][6].piece = new Bishop(colors.BLACK)
-        @board[3][3].piece = new Queen(colors.WHITE)
+        @board[2][2].piece = new King(players.WHITE)
+        @board[5][6].piece = new Rook(players.BLACK)
+        @board[4][4].piece = new Knight(players.WHITE)
+        @board[2][6].piece = new Bishop(players.BLACK)
+        @board[3][3].piece = new Queen(players.WHITE)
 
         @model =
             board: @board
