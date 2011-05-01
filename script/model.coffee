@@ -7,7 +7,11 @@ class Piece
         @player = player
         
     canMoveTo: (board, currentCoord, targetCoord) ->
-        return false
+        # can't capture own team
+        if (board[targetCoord.col][targetCoord.row].piece and board[targetCoord.col][targetCoord.row].piece.player == this.player)
+            return false
+        else
+            return true
         
     #checks if an orthogonal path is clear of pieces, not counting the start and end squares
     isOrthogonalPathClear: (board, currentCoord, targetCoord) ->
@@ -35,6 +39,8 @@ class King extends Piece
         @appearance = "KING"
 
     canMoveTo: (board, currentCoord, targetCoord) ->
+        if !super(board, currentCoord, targetCoord)
+            return false
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
         return (vert == 1 and horiz == 1) or (vert == 0 and horiz == 1) or (vert == 1 and horiz == 0)
@@ -45,6 +51,8 @@ class Rook extends Piece
         @appearance = "ROOK"
 
     canMoveTo: (board, currentCoord, targetCoord) ->
+        if !super(board, currentCoord, targetCoord)
+            return false
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
         if (vert == 0 and horiz != 0) or (vert != 0 and horiz == 0)
@@ -58,6 +66,8 @@ class Bishop extends Piece
             @appearance = "BISHOP"
 
     canMoveTo: (board, currentCoord, targetCoord) ->
+        if !super(board, currentCoord, targetCoord)
+            return false
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
         if vert != horiz or vert == 0 or horiz == 0
@@ -70,6 +80,8 @@ class Queen extends Piece
         @appearance = "QUEEN"
 
     canMoveTo: (board, currentCoord, targetCoord) ->
+        if !super(board, currentCoord, targetCoord)
+            return false
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
         if (vert == horiz and (vert != 0 and horiz != 0)) or (horiz == 0 and vert != 0) or (vert == 0 and horiz != 0)
@@ -83,6 +95,8 @@ class Knight extends Piece
             @appearance = "KNIGHT"
 
     canMoveTo: (board, currentCoord, targetCoord) ->
+        if !super(board, currentCoord, targetCoord)
+            return false
         vert = utils.abs(currentCoord.row - targetCoord.row)
         horiz = utils.abs(currentCoord.col - targetCoord.col)
         return (vert == 2 and horiz == 1) or (vert == 1 and horiz == 2)      

@@ -12,7 +12,11 @@ Piece = (function() {
     this.player = player;
   }
   Piece.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
-    return false;
+    if (board[targetCoord.col][targetCoord.row].piece && board[targetCoord.col][targetCoord.row].piece.player === this.player) {
+      return false;
+    } else {
+      return true;
+    }
   };
   Piece.prototype.isOrthogonalPathClear = function(board, currentCoord, targetCoord) {
     var currentCol, currentRow;
@@ -45,6 +49,9 @@ King = (function() {
   }
   King.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
+    if (!King.__super__.canMoveTo.call(this, board, currentCoord, targetCoord)) {
+      return false;
+    }
     vert = utils.abs(currentCoord.row - targetCoord.row);
     horiz = utils.abs(currentCoord.col - targetCoord.col);
     return (vert === 1 && horiz === 1) || (vert === 0 && horiz === 1) || (vert === 1 && horiz === 0);
@@ -59,6 +66,9 @@ Rook = (function() {
   }
   Rook.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
+    if (!Rook.__super__.canMoveTo.call(this, board, currentCoord, targetCoord)) {
+      return false;
+    }
     vert = utils.abs(currentCoord.row - targetCoord.row);
     horiz = utils.abs(currentCoord.col - targetCoord.col);
     if ((vert === 0 && horiz !== 0) || (vert !== 0 && horiz === 0)) {
@@ -77,6 +87,9 @@ Bishop = (function() {
   }
   Bishop.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
+    if (!Bishop.__super__.canMoveTo.call(this, board, currentCoord, targetCoord)) {
+      return false;
+    }
     vert = utils.abs(currentCoord.row - targetCoord.row);
     horiz = utils.abs(currentCoord.col - targetCoord.col);
     if (vert !== horiz || vert === 0 || horiz === 0) {
@@ -94,6 +107,9 @@ Queen = (function() {
   }
   Queen.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
+    if (!Queen.__super__.canMoveTo.call(this, board, currentCoord, targetCoord)) {
+      return false;
+    }
     vert = utils.abs(currentCoord.row - targetCoord.row);
     horiz = utils.abs(currentCoord.col - targetCoord.col);
     if ((vert === horiz && (vert !== 0 && horiz !== 0)) || (horiz === 0 && vert !== 0) || (vert === 0 && horiz !== 0)) {
@@ -112,6 +128,9 @@ Knight = (function() {
   }
   Knight.prototype.canMoveTo = function(board, currentCoord, targetCoord) {
     var horiz, vert;
+    if (!Knight.__super__.canMoveTo.call(this, board, currentCoord, targetCoord)) {
+      return false;
+    }
     vert = utils.abs(currentCoord.row - targetCoord.row);
     horiz = utils.abs(currentCoord.col - targetCoord.col);
     return (vert === 2 && horiz === 1) || (vert === 1 && horiz === 2);
